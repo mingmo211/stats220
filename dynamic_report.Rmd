@@ -1,0 +1,57 @@
+---
+output: html_fragment
+---
+
+## Cars observed during daily travel
+
+This dynamic report shows observational logging data about cars that I observed during daily travel over multiple days. Each response represents one car that I noticed in a public place such as a road, car park, or traffic light area.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+```
+
+```{r}
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTokUGLCkRrq1n9V-vY5CtuG-FWeM93cjQdZ5LYBwczyB2ubH74aHCpPEh8mXwGiTNcRVFPSDk62bd2/pub?output=csv")
+
+latest_data <- logged_data %>%
+  rename(
+    date = time,
+    car_type = `What type of car is it?`,
+    colour = `What is the main colour of the car?`,
+    occupants = `How many visible occupants are in the car?`,
+    location = `Where did you observe the car?`
+  )
+```
+
+### Summary of observations
+
+The average number of visible occupants per car was `r round(mean(latest_data$occupants), 2)`.
+
+The maximum number of visible occupants observed in one car was `r max(latest_data$occupants)`.
+
+### Car types observed
+
+```{r}
+latest_data %>%
+  ggplot(aes(x = car_type)) +
+  geom_bar() +
+  labs(
+    title = "Number of cars observed by type",
+    x = "Car type",
+    y = "Count"
+  )
+```
+
+### Car colours observed
+
+```{r}
+latest_data %>%
+  ggplot(aes(x = colour)) +
+  geom_bar() +
+  labs(
+    title = "Number of cars observed by colour",
+    x = "Colour",
+    y = "Count"
+  )
+```
